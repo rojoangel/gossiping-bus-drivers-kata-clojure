@@ -15,6 +15,9 @@
   (reduce (fn [acc [stop-num gossips-at-stop]] (update acc stop-num set/union gossips-at-stop))
           {} (map vector stops gossips)))
 
+(defn exchange-gossips [stops gossips]
+  (let [gossips-exchanged (gossips-exchanged stops gossips)]
+    (for [stop stops] (get gossips-exchanged stop))))
 
 ; some sort of reduce?
 ;gossips  ;meets/stops  ;gossips

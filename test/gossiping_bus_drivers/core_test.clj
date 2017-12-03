@@ -32,3 +32,13 @@
     (let [stops [96 97 96 97]
           gossips [#{:1 :2} #{:2} #{:1 :3} #{:4}]]
       (is (= {96 #{:1 :2 :3} 97 #{:2 :4}} (gossips-exchanged stops gossips))))))
+
+(deftest exchange-gossips-should
+  (testing "do nothing when no drivers meet at the same stop"
+    (let [stops [96 97 98 99]
+          gossips [#{:1} #{:2} #{:3} #{:4}]]
+      (is (= gossips) (exchange-gossips stops gossips))))
+  (testing "cause gossips to be exchanged when drivers meet a the same stop"
+    (let [stops [96 97 96 97]
+          gossips [#{:1 :2} #{:2} #{:1 :3} #{:4}]]
+      (is (= [#{:1 :2 :3} #{:2 :4} #{:1 :2 :3} #{:2 :4}]) (exchange-gossips stops gossips)))))
