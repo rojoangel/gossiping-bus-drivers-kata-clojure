@@ -27,18 +27,25 @@
   (testing "not happen when stops are different for all drivers"
     (let [stops [96 97 98 99]
           gossips [#{:1} #{:2} #{:3} #{:4}]]
-      (is (= {96 #{:1} 97 #{:2} 98 #{:3} 99 #{:4}} (gossips-exchanged stops gossips)))))
+      (is (= {96 #{:1} 97 #{:2} 98 #{:3} 99 #{:4}} (gossips-exchanged gossips stops)))))
   (testing "happen when two drivers meet in a stop"
     (let [stops [96 97 96 97]
           gossips [#{:1 :2} #{:2} #{:1 :3} #{:4}]]
-      (is (= {96 #{:1 :2 :3} 97 #{:2 :4}} (gossips-exchanged stops gossips))))))
+      (is (= {96 #{:1 :2 :3} 97 #{:2 :4}} (gossips-exchanged gossips stops))))))
 
 (deftest exchange-gossips-should
   (testing "do nothing when no drivers meet at the same stop"
     (let [stops [96 97 98 99]
           gossips [#{:1} #{:2} #{:3} #{:4}]]
-      (is (= gossips) (exchange-gossips stops gossips))))
+      (is (= gossips) (exchange-gossips gossips stops))))
   (testing "cause gossips to be exchanged when drivers meet a the same stop"
     (let [stops [96 97 96 97]
           gossips [#{:1 :2} #{:2} #{:1 :3} #{:4}]]
-      (is (= [#{:1 :2 :3} #{:2 :4} #{:1 :2 :3} #{:2 :4}]) (exchange-gossips stops gossips)))))
+      (is (= [#{:1 :2 :3} #{:2 :4} #{:1 :2 :3} #{:2 :4}]) (exchange-gossips gossips stops)))))
+
+(deftest mins-to-get-all-gossips-around-should
+  (testing "be compliant with the acceptance values"
+    (let [stops [[3 1 2 3] [3 2 3 1] [4 2 3 4 5]]]
+      (is (= 5 (mins-to-get-all-gossips-around stops))))
+    (let [stops [[2 1 2] [5 2 8]]]
+      (is (= :never (mins-to-get-all-gossips-around stops))))))

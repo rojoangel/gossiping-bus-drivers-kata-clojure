@@ -11,25 +11,22 @@
   (for [gossip (range 1 (inc drivers-count))]
     (conj #{} (keyword (str gossip)))))
 
-(defn gossips-exchanged [stops gossips]
+(defn gossips-exchanged [gossips stops]
   (reduce (fn [acc [stop-num gossips-at-stop]] (update acc stop-num set/union gossips-at-stop))
           {} (map vector stops gossips)))
 
-(defn exchange-gossips [stops gossips]
-  (let [gossips-exchanged (gossips-exchanged stops gossips)]
+(defn exchange-gossips [gossips stops]
+  (let [gossips-exchanged (gossips-exchanged gossips stops)]
     (for [stop stops] (get gossips-exchanged stop))))
 
-; some sort of reduce?
-;gossips  ;meets/stops  ;gossips
-; [#{:1}    [2   ->       [ #{:1 :2}
-;  #{:2}     2   ->         #{:1 :2}
-;  #{:3}     3   ->         #{:3 :4}
-;  #{:4}]    3]  ->         #{:3 :4}]
-; don't use true/false 'cos more than one pair of drivers can meet at a stop
-; mapping gossips on stops may be helpful {2 #{:1 :2} 3 #{:3 :4}}
-; then it can be added to the set with index = stop (key in the map)
-
-; (reduce (fn [driver-gossip meet]
-;          (let [exchanged-gossips]
-;            add-exchanged-gossips-to-matches)
-;          driver-gossips meets)
+(defn mins-to-get-all-gossips-around [drivers-stops]
+  (let [day-schedule (day-schedule drivers-stops)
+        drivers-count (count drivers-stops)
+        gossips (gossips drivers-count)
+        mins-to-get-all-gossips-around (count
+                                         (take-while (fn [drivers-gossips]
+                                                       (not-every? #(= drivers-count (count %)) drivers-gossips))
+                                                     (reductions exchange-gossips gossips day-schedule)))]
+    (if (> mins-to-get-all-gossips-around 480)
+      :never
+      mins-to-get-all-gossips-around)))
