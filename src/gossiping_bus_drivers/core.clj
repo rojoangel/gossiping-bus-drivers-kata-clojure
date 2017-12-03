@@ -32,10 +32,10 @@
     (every? #(= drivers-count (count %)) drivers-gossips)))
 
 (defn mins-to-get-all-gossips-around [drivers-stops]
-  (let [mins-to-get-all-gossips-around
-        (count
-          (take-while (complement all-drivers-aware-of-all-gossips?)
-                      (day-schedule-gossips drivers-stops)))]
-    (if (> mins-to-get-all-gossips-around turn->mins)
-      :never
-      mins-to-get-all-gossips-around)))
+  ((fn [mins] (if (> mins 480)
+                :never
+                mins))
+    (->> drivers-stops
+         (day-schedule-gossips)
+         (take-while (complement all-drivers-aware-of-all-gossips?))
+         (count))))
