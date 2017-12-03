@@ -16,3 +16,9 @@
     (testing "contain a stop for each driver at every minute"
       (let [drivers-count (count drivers-stops)]
         (is (= true (every? #(= drivers-count (count %)) (day-schedule drivers-stops))))))))
+
+(deftest gossips-should
+  (let [drivers-stops [[3 1 2 3] [3 2 3 1] [4 2 3 4 5]]
+        drivers-count (count drivers-stops)]
+    (testing "contain a gossip per driver"
+      (is (= drivers-count (count (gossips drivers-count)))))))
