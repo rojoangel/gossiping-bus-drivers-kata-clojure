@@ -1,8 +1,10 @@
 (ns gossiping-bus-drivers.core
   (:require [clojure.set :as set]))
 
+(def turn->mins 480)
+
 (defn route [driver-stops]
-  (take 480 (cycle driver-stops)))
+  (take turn->mins (cycle driver-stops)))
 
 (defn day-schedule [drivers-stops]
   (apply map vector (map route drivers-stops)))
@@ -34,6 +36,6 @@
         (count
           (take-while (complement all-drivers-aware-of-all-gossips?)
                       (day-schedule-gossips drivers-stops)))]
-    (if (> mins-to-get-all-gossips-around 480)
+    (if (> mins-to-get-all-gossips-around turn->mins)
       :never
       mins-to-get-all-gossips-around)))
