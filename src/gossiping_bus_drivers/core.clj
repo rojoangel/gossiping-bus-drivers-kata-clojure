@@ -1,4 +1,5 @@
-(ns gossiping-bus-drivers.core)
+(ns gossiping-bus-drivers.core
+  (:require [clojure.set :as set]))
 
 (defn route [driver-stops]
   (take 480 (cycle driver-stops)))
@@ -9,6 +10,11 @@
 (defn gossips [drivers-count]
   (for [gossip (range 1 (inc drivers-count))]
     (conj #{} (keyword (str gossip)))))
+
+(defn gossips-exchanged [stops gossips]
+  (reduce (fn [acc [stop-num gossips-at-stop]] (update acc stop-num set/union gossips-at-stop))
+          {} (map vector stops gossips)))
+
 
 ; some sort of reduce?
 ;gossips  ;meets/stops  ;gossips

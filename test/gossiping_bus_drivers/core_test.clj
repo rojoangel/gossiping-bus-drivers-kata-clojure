@@ -22,3 +22,13 @@
         drivers-count (count drivers-stops)]
     (testing "contain a gossip per driver"
       (is (= drivers-count (count (gossips drivers-count)))))))
+
+(deftest gossips-exchanged-should
+  (testing "not happen when stops are different for all drivers"
+    (let [stops [96 97 98 99]
+          gossips [#{:1} #{:2} #{:3} #{:4}]]
+      (is (= {96 #{:1} 97 #{:2} 98 #{:3} 99 #{:4}} (gossips-exchanged stops gossips)))))
+  (testing "happen when two drivers meet in a stop"
+    (let [stops [96 97 96 97]
+          gossips [#{:1 :2} #{:2} #{:1 :3} #{:4}]]
+      (is (= {96 #{:1 :2 :3} 97 #{:2 :4}} (gossips-exchanged stops gossips))))))
