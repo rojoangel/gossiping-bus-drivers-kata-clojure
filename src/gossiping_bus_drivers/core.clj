@@ -3,8 +3,8 @@
 (defn route [driver-stops]
   (take 480 (cycle driver-stops)))
 
-(defn routes [all-drivers-stops]
-  (apply map vector (map route all-drivers-stops)))
+(defn day-schedule [drivers-stops]
+  (apply map vector (map route drivers-stops)))
 
 (defn gossips [drivers-count]
   (for [gossip (range 1 (inc drivers-count))]
